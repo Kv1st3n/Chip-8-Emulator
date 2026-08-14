@@ -1,3 +1,6 @@
+# Exclude VS Code settings and workspace files
+.vscode/
+
 # Prerequisites
 *.d
 
