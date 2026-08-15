@@ -4,3 +4,4 @@ add_library(Chip8Library STATIC
 )
 
 target_include_directories(Chip8Library PUBLIC .)
+
