@@ -22,3 +22,56 @@ unsigned char chip8_font[80] = {
     0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
+
+Chip8::Chip8() {}
+Chip8::~Chip8() {}
+
+void Chip8::clear_stack(u16 stack, u8 V, u8 keypad) {
+
+    for (int i = 0; i < 16; i++) {
+        this->stack[i] = 0;
+        this->V[i] = 0;
+        this->keypad[i] = 0;
+    }
+
+}
+
+void Chip8::clear_display(u8 display) {
+
+    for (int i = 0; i < 2048; i++) {
+        this->display[i] = 0;
+    }
+}
+
+void Chip8::clear_memory(u8 memory) {
+
+    for (int i = 0; i < 4096; i++) {
+        this->memory[i] = 0;
+    }
+    
+}
+
+void Chip8::load_font(u8 memory) {
+
+    for (int i = 0; i < 4096; i++) {
+        this->memory[i] = chip8_font[i];
+    }
+
+}
+
+void Chip8::init() {
+    PC = 0x200; // starting adress
+    I = 0;
+    opcode = 0;
+    stack_pointer = 0;
+
+    clear_stack(*stack, *V, *keypad);
+    clear_display(*display);
+    clear_memory(*memory);
+    load_font(*memory);
+
+}
+
+bool Chip8::load_game_rom(const char *file_path) {
+
+}

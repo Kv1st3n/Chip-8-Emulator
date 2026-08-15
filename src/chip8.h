@@ -22,6 +22,11 @@ private:
     u8 sound_timer;
 
     void init();
+    void clear_stack(u16 stack, u8 V, u8 keypad);
+    void clear_display(u8 display);
+    void clear_memory(u8 memory);
+    void load_font(u8 memory);
+
 
 public:
     u8 display[64 * 32];
