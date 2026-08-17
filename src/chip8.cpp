@@ -1,6 +1,7 @@
 #include "chip8.h"
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <random>
 
@@ -22,6 +23,9 @@ unsigned char chip8_font[80] = {
     0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
+
+const unsigned int START_ADDRESS = 0x200;
+const unsigned int MEMORY_SIZE = 0x1000; // 4Kb (4096)
 
 Chip8::Chip8() {}
 Chip8::~Chip8() {}
@@ -60,7 +64,7 @@ void Chip8::load_font(u8 memory) {
 }
 
 void Chip8::init() {
-    PC = 0x200; // starting adress
+    PC = START_ADDRESS; // starting adress
     I = 0;
     opcode = 0;
     stack_pointer = 0;
@@ -74,4 +78,37 @@ void Chip8::init() {
 
 bool Chip8::load_game_rom(const char *file_path) {
 
+    std::ifstream file(file_path, std::ios::binary);
+
+    if (file.is_open()) {
+
+        // get length of rom
+        file.seekg(0, file.end);
+        long rom_size = file.tellg();
+        file.seekg(0, file.beg);
+
+        // allocate buffer based on size of rome
+        char* buffer = new char[rom_size];
+
+        file.read(buffer, rom_size);
+        file.close();
+
+        // load to memory
+        // check if it can be loaded
+        if ((MEMORY_SIZE - START_ADDRESS) > rom_size) {
+            for (long i = 0; i < rom_size; i++) {
+                memory[i + START_ADDRESS] = buffer[i];
+            }
+        } else {
+            std::cerr << "ROM is to large" << std::endl;
+            return false;
+        }
+        // free the buffer
+        delete[] buffer;
+        return true;
+
+    } else {
+        std::cerr << "ROM can not be opened or found" << std::endl;
+        return false;
+    }
 }
