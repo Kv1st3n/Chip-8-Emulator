@@ -27,6 +27,10 @@ private:
     void clear_memory(u8 memory);
     void load_font(u8 memory);
 
+    void fetch();
+    void decode();
+    void execute();
+
 
 public:
     u8 display[64 * 32];
