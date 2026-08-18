@@ -48,7 +48,7 @@ public:
     void IN_7XNN(); //
 
     void IN_8XY0(); //
-    void IN_8XY1();
+    void IN_8XY1(); // todo, fix remaining instructions
     void IN_8XY2();
     void IN_8XY3();
     void IN_8XY4();
