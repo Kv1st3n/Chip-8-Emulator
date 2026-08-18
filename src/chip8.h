@@ -27,17 +27,56 @@ private:
     void clear_memory(u8 memory);
     void load_font(u8 memory);
 
-    void fetch();
-    void decode();
-    void execute();
-
-
 public:
     u8 display[64 * 32];
     u8 keypad[16];
     
     void run_cycle();
     bool load_game_rom(const char *file_path);
+
+    // instructions of Chip8
+    void IN_0NNN(); //
+    void IN_00E0(); //
+    void IN_00EE(); //
+
+    void IN_1NNN(); //
+    void IN_2NNN(); //
+    void IN_3XNN(); //
+    void IN_4XNN(); //
+    void IN_5XY0(); //
+    void IN_6XNN(); //
+    void IN_7XNN(); //
+
+    void IN_8XY0(); //
+    void IN_8XY1();
+    void IN_8XY2();
+    void IN_8XY3();
+    void IN_8XY4();
+    void IN_8XY5();
+    void IN_8XY6();
+    void IN_8XY7();
+    void IN_8XYE();
+
+    void IN_9XY0();
+
+    void IN_ANNN();
+    void IN_BNNN();
+    void IN_CXNN();
+    void IN_DXYN();
+
+    void IN_EX9E();
+    void IN_EXA1();
+
+    void IN_FX07();
+    void IN_FX0A();
+    void IN_FX15();
+    void IN_FX18();
+    void IN_FX1E();
+    void IN_FX29();
+    void IN_FX33();
+    void IN_FX55();
+    void IN_FX65();
+
 };
 
 

@@ -112,3 +112,118 @@ bool Chip8::load_game_rom(const char *file_path) {
         return false;
     }
 }
+
+void Chip8::run_cycle() {
+
+    init();
+
+    opcode = (memory[PC] << 8) | memory[PC + 1];
+
+    // decode / execute
+
+    if (delay_timmer > 0) {
+        --delay_timmer;
+    }
+
+    if (sound_timer > 0) {
+        --sound_timer;
+    }
+
+}
+
+void Chip8::IN_0NNN() {
+
+}
+
+void Chip8::IN_00E0() {
+
+    memset(display, 0, sizeof(display));
+    PC+=2;
+}
+
+void Chip8::IN_00EE() {
+    --stack_pointer;
+    PC = stack[stack_pointer];
+    PC+=2;
+}
+
+void Chip8::IN_1NNN() {
+    PC = opcode & 0x0FFFu;
+}
+
+void Chip8::IN_2NNN() {
+    stack[stack_pointer] = PC;
+    ++stack_pointer;
+    PC = opcode & 0x0FFFu;
+}
+
+void Chip8::IN_3XNN() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 Byte = (opcode & 0x0FFFu);
+
+    if (V[VX] == Byte) {
+        PC += 4;
+    } else {
+        PC += 2;
+    }
+}
+
+void Chip8::IN_4XNN() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 Byte = (opcode & 0x00F0);
+
+    if (V[VX] != Byte) {
+        PC += 4;
+    } else {
+        PC += 2;
+    }
+}
+
+void Chip8::IN_5XY0() {
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0) >> 4U;
+
+    if (V[VX] == V[VY]) {
+        PC += 4;
+    } else {
+        PC += 2;
+    }
+}
+
+void Chip8::IN_6XNN() {
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 Byte = (opcode & 0x00F0);
+
+    V[VX] = Byte;
+    PC += 2;
+}
+
+void Chip8::IN_7XNN() {
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 Byte = (opcode & 0x00F0);
+
+    V[VX] += Byte;
+    PC += 2;
+}
+
+void Chip8::IN_8XY0() {
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0) >> 4U;
+
+    V[VX] = V[VY];
+    PC += 2;
+}
+
+void Chip8::IN_9XY0() {
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0) >> 4U;
+
+    if (V[VX] != V[VY]) {
+        PC += 2;
+    } else {
+        PC += 2;
+    }
+}
+
