@@ -121,8 +121,8 @@ void Chip8::run_cycle() {
 
     // decode / execute
 
-    if (delay_timmer > 0) {
-        --delay_timmer;
+    if (delay_timer > 0) {
+        --delay_timer;
     }
 
     if (sound_timer > 0) {
@@ -356,9 +356,9 @@ void Chip8::IN_DXYN() {
 
     u8 VX = (opcode & 0x0F00u) >> 8u;
     u8 VY = (opcode & 0x00F0u) >> 4u;
-    u8 Xpos = (VX % 63); // display width
-    u8 Ypos = (VY & 31);
-    u8 sprite_height = opcode & 0x000Fu;
+    u8 X_pos = (VX % 63); // display width
+    u8 Y_pos = (VY & 31);
+    u8 sprite_height = (opcode & 0x000Fu);
     u8 pixel;
     V[0xF] = 0;
 
@@ -369,7 +369,7 @@ void Chip8::IN_DXYN() {
         for (long column = 0; column < 8; column++) {
 
             u8 sprite_pixel = (pixel & (0x80u >> row));
-            u16 screen = display[(Xpos + row + ((Ypos + column) * 64))];
+            u16 screen = display[(X_pos + row + ((Y_pos + column) * 64))];
 
             if (sprite_pixel == 1) {
 
@@ -382,6 +382,64 @@ void Chip8::IN_DXYN() {
         }
     }
 }
+
+void Chip8::IN_EX9E() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    if (keypad[V[VX]] != 0) {
+        PC += 4;
+    } else {
+        PC += 2;
+    }
+}
+
+void Chip8::IN_EXA1() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    if (keypad[V[VX]] == 0) {
+        PC += 4;
+    } else {
+        PC += 2;
+    }
+
+}
+
+void Chip8::IN_FX07() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    V[VX] = delay_timer;
+
+}
+
+void Chip8::IN_FX0A() {
+    
+}
+
+void Chip8::IN_FX15() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    delay_timer = V[VX];
+}
+
+void Chip8::IN_FX18() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    sound_timer = V[VX];
+}
+
+void Chip8::IN_FX1E() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    I += V[VX];
+
+}
+
 
 
 

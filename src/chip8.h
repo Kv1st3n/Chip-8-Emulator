@@ -18,7 +18,7 @@ private:
     u8 I; // Index register  
     u8 opcode;
 
-    u8 delay_timmer;
+    u8 delay_timer;
     u8 sound_timer;
 
 
@@ -66,12 +66,12 @@ public:
     void IN_DXYN(); //
 
     void IN_EX9E(); // todo, fix remaining instructions
-    void IN_EXA1();
+    void IN_EXA1(); //
 
-    void IN_FX07();
+    void IN_FX07(); //
     void IN_FX0A();
-    void IN_FX15();
-    void IN_FX18();
+    void IN_FX15(); //
+    void IN_FX18(); //
     void IN_FX1E();
     void IN_FX29();
     void IN_FX33();
