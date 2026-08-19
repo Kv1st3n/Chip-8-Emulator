@@ -63,7 +63,7 @@ void Chip8::load_font(u8 memory) {
 
 }
 
-void Chip8::init() {
+void Chip8::start_chip8() {
     PC = START_ADDRESS; // starting adress
     I = 0;
     opcode = 0;
@@ -115,7 +115,7 @@ bool Chip8::load_game_rom(const char *file_path) {
 
 void Chip8::run_cycle() {
 
-    init();
+    start_chip8();
 
     opcode = (memory[PC] << 8) | memory[PC + 1];
 
@@ -159,10 +159,10 @@ void Chip8::IN_2NNN() {
 
 void Chip8::IN_3XNN() {
 
+    u8 NN = (opcode & 0x00FFu);
     u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 Byte = (opcode & 0x0FFFu);
 
-    if (V[VX] == Byte) {
+    if (V[VX] == NN) {
         PC += 4;
     } else {
         PC += 2;
@@ -171,10 +171,10 @@ void Chip8::IN_3XNN() {
 
 void Chip8::IN_4XNN() {
 
+    u8 NN = (opcode & 0x00FFu);
     u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 Byte = (opcode & 0x00F0);
 
-    if (V[VX] != Byte) {
+    if (V[VX] != NN) {
         PC += 4;
     } else {
         PC += 2;
@@ -182,8 +182,9 @@ void Chip8::IN_4XNN() {
 }
 
 void Chip8::IN_5XY0() {
+
     u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 VY = (opcode & 0x00F0) >> 4U;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
 
     if (V[VX] == V[VY]) {
         PC += 4;
@@ -193,32 +194,131 @@ void Chip8::IN_5XY0() {
 }
 
 void Chip8::IN_6XNN() {
-    u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 Byte = (opcode & 0x00F0);
 
-    V[VX] = Byte;
+    u8 NN = (opcode & 0x00FFu);
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    V[VX] = NN;
     PC += 2;
 }
 
 void Chip8::IN_7XNN() {
-    u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 Byte = (opcode & 0x00F0);
 
-    V[VX] += Byte;
+    u8 NN = (opcode & 0x00FFu);
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    V[VX] += NN;
     PC += 2;
 }
 
 void Chip8::IN_8XY0() {
+
     u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 VY = (opcode & 0x00F0) >> 4U;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
 
     V[VX] = V[VY];
     PC += 2;
 }
 
-void Chip8::IN_9XY0() {
+void Chip8::IN_8XY1() {
+
     u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 VY = (opcode & 0x00F0) >> 4U;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
+
+    V[VX] |= V[VY];
+    PC += 2;
+}
+
+void Chip8::IN_8XY2() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
+
+    V[VX] &= V[VY];
+    PC += 2;
+}
+
+void Chip8::IN_8XY3() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
+
+    V[VX] ^= V[VY];
+    PC += 2;
+}
+
+void Chip8::IN_8XY4() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
+    
+    u16 sum = V[VX] + V[VY];
+
+    if (sum > 255U) {
+        V[0xF] = 1;
+    } else {
+        V[0xF] = 0;
+    }
+
+    V[VX] = sum & 0xFFu;
+    PC += 2;
+}
+
+void Chip8::IN_8XY5() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
+
+    if (V[VX] > V[VY]) {
+        V[0xF] = 1;
+    } else {
+        V[0xF] = 0;
+    }
+
+    V[VX] -= V[VY];
+    PC += 2;
+}
+
+void Chip8::IN_8XY6() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
+
+    V[VX] = (V[VX] & 0x1u);
+    V[VX] >>= 1;
+    PC += 2;
+
+}
+
+void Chip8::IN_8XY7() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
+
+    if (V[VY] > V[VX]) {
+        V[0xF] = 1;
+    } else {
+        V[0xF] = 0;
+    }
+
+    V[VY] = V[VY] - V[VX];
+    PC += 2;
+}
+
+void Chip8::IN_8XYE() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
+
+    V[VX] = (V[VX] & 0x1u) >> 7u;
+    V[VX] <<= 1;
+    PC += 2;
+}
+
+void Chip8::IN_9XY0() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
 
     if (V[VX] != V[VY]) {
         PC += 2;
@@ -226,4 +326,65 @@ void Chip8::IN_9XY0() {
         PC += 2;
     }
 }
+
+void Chip8::IN_ANNN() {
+
+    u8 address = (opcode & 0x0FFF);
+    I = address;
+    PC += 2;
+}
+
+void Chip8::IN_BNNN() {
+
+    u8 address = (opcode & 0x0FFF);
+    PC = V[0] + address;
+
+}
+
+void Chip8::IN_CXNN() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 NN = (opcode & 0x00FFu);
+
+    u8 random_number = (rand() % (0xFF + 1));
+
+    V[VX] = NN & random_number;
+    
+}
+
+void Chip8::IN_DXYN() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 VY = (opcode & 0x00F0u) >> 4u;
+    u8 Xpos = (VX % 63); // display width
+    u8 Ypos = (VY & 31);
+    u8 sprite_height = opcode & 0x000Fu;
+    u8 pixel;
+    V[0xF] = 0;
+
+    for (long row = 0; row < sprite_height; row++) {
+        
+        pixel = memory[I + row];
+
+        for (long column = 0; column < 8; column++) {
+
+            u8 sprite_pixel = (pixel & (0x80u >> row));
+            u16 screen = display[(Xpos + row + ((Ypos + column) * 64))];
+
+            if (sprite_pixel == 1) {
+
+                if (screen == 1) {
+
+                    V[0xF] = 1;
+                }
+                screen ^= 1;
+            }
+        }
+    }
+}
+
+
+
+
+
 
