@@ -12,6 +12,8 @@ class Renderer
         // deconstructor
         ~Renderer();
 
+        void init();
+        void handle_sound();
         void update_screen();
         bool input_handler();
 
