@@ -1,5 +1,5 @@
-#ifndef CHIP_8_H
-#define CHIP_8_H
+#ifndef CHIP8_H // CHIP_8_H ?
+#define CHIP8_H
 
 #include <stdlib.h>
 
@@ -69,10 +69,10 @@ public:
     void IN_EXA1(); //
 
     void IN_FX07(); //
-    void IN_FX0A();
+    void IN_FX0A(); //
     void IN_FX15(); //
     void IN_FX18(); //
-    void IN_FX1E();
+    void IN_FX1E(); //
     void IN_FX29();
     void IN_FX33();
     void IN_FX55();

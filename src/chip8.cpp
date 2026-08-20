@@ -409,38 +409,96 @@ void Chip8::IN_EXA1() {
 void Chip8::IN_FX07() {
 
     u8 VX = (opcode & 0x0F00u) >> 8u;
-
     V[VX] = delay_timer;
+    PC += 2;
 
 }
 
 void Chip8::IN_FX0A() {
     
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 keys = 16;
+    bool is_key_press = false;
+
+    for (int i = 0; i < keys; i++) {
+
+        if(keypad[i]) {
+            V[VX] = i;
+            is_key_press = true;
+        } else {
+            PC -= 2;
+        }
+    }
+    // maybe check !is_key_press return
 }
 
 void Chip8::IN_FX15() {
 
     u8 VX = (opcode & 0x0F00u) >> 8u;
-
     delay_timer = V[VX];
+
+    PC += 2;
 }
 
 void Chip8::IN_FX18() {
 
     u8 VX = (opcode & 0x0F00u) >> 8u;
-
     sound_timer = V[VX];
+
+    PC += 2;
 }
 
 void Chip8::IN_FX1E() {
 
     u8 VX = (opcode & 0x0F00u) >> 8u;
-
     I += V[VX];
+
+    PC += 2;
 
 }
 
+void Chip8::IN_FX29() {
 
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+    I = VX * 0x5u;
+
+    PC += 2;
+}
+
+void Chip8::IN_FX33() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    memory[I] = (VX / 100);
+    memory[I + 1] = ((VX / 10) % 10);
+    memory[I + 2] = (VX % 10);
+
+    PC += 2;
+}
+
+void Chip8::IN_FX55() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    for (int i = 0; i < VX; i++) {
+        memory[I + i] = V[i];
+    }
+
+    PC += 2;
+
+}
+
+void Chip8::IN_FX65() {
+
+    u8 VX = (opcode & 0x0F00u) >> 8u;
+
+    for (int i = 0; i < VX; i++) {
+        V[i] = memory[I + i];
+    }
+
+    PC += 2;
+
+}
 
 
 
