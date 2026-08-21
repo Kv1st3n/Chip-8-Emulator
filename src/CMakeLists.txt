@@ -6,4 +6,4 @@ add_library(Chip8Library STATIC
 )
 
 target_include_directories(Chip8Library PUBLIC .)
-
+target_link_libraries(Chip8Library PUBLIC SDL3::SDL3)

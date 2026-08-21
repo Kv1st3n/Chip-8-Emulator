@@ -18,8 +18,3 @@ target_include_directories(chip8 PRIVATE
     "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/src"
 ) 
-
-
-
-
-
