@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "chip8.h"
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -9,17 +10,11 @@ u8 keymap[16] {
     0
 };
 
-Renderer::Renderer() {}
-Renderer::~Renderer() {}
-
-void Renderer::init() {
+Renderer::Renderer(int width, int height, int texture_width, int texture_height) 
+{
+    SDL_Init(SDL_INIT_VIDEO);
 
     SDL_Window *window;
-    bool done = false;
-
-    int width = 640, height = 320;
-
-    SDL_Init(SDL_INIT_VIDEO);
 
     window = SDL_CreateWindow(
         "Chip8 Emulator",
@@ -37,6 +32,28 @@ void Renderer::init() {
 
     // texturer
     SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 64, 32);
+}
+
+Renderer::~Renderer() 
+{   
+    SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+
+void Renderer::init() {
+
+    bool done = false;
+    int width = 640, height = 320;
+    int texture_width = 64, texture_height = 32;
+
+    char const* rom_name;
+
+    Renderer renderer(width, height, texture_width, texture_height);
+
+    Chip8 chip8;
+    chip8.load_game_rom(rom_name);
 
     while (!done) {
         SDL_Event event;
@@ -48,8 +65,4 @@ void Renderer::init() {
         }
     }
 
-    SDL_DestroyWindow(window);
-
-    // Clean up
-    SDL_Quit();
 }
