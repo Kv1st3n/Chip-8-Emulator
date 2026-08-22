@@ -27,6 +27,7 @@ private:
     void clear_display(u8 display);
     void clear_memory(u8 memory);
     void load_font(u8 memory);
+    void function_pointer();
 
 public:
     u8 display[64 * 32];

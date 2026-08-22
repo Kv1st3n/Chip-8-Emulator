@@ -7,7 +7,22 @@
 typedef uint8_t u8;
 
 u8 keymap[16] { 
-    0
+    SDLK_1,
+    SDLK_2,
+    SDLK_3,
+    SDLK_4,
+    SDLK_Q,
+    SDLK_W,
+    SDLK_E,
+    SDLK_R,
+    SDLK_A,
+    SDLK_S,
+    SDLK_D,
+    SDLK_F,
+    SDLK_Z,
+    SDLK_X,
+    SDLK_C,
+    SDLK_V
 };
 
 Renderer::Renderer(int width, int height, int texture_width, int texture_height) 

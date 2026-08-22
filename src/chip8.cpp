@@ -500,6 +500,9 @@ void Chip8::IN_FX65() {
 
 }
 
+void Chip8::function_pointer() {
+    
+}
 
 
 
