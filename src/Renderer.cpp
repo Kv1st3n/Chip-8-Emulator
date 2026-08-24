@@ -81,3 +81,14 @@ void Renderer::init() {
     }
 
 }
+
+void Renderer::input_handler(SDL_Event event, Chip8 chip8) {
+
+    if (event.type == SDL_EventType::SDL_EVENT_KEY_DOWN) {
+        for (int i = 0; i < 16; ++i) {
+            if (event.type == keymap[i]) {
+                chip8.keypad[i] = 1;
+            }
+        }
+    }
+}

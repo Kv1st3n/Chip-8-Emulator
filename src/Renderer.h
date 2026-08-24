@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include "chip8.h"
 
 class Renderer
 {
@@ -17,7 +18,7 @@ class Renderer
         void init();
         void handle_sound();
         void update_screen();
-        bool input_handler(); // handles the keymap
+        void input_handler(SDL_Event event, Chip8 chip8); // handles the keymap
 
     private:
         SDL_Window* window{};
