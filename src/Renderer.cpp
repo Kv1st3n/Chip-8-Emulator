@@ -82,12 +82,28 @@ void Renderer::init() {
 
 }
 
-void Renderer::input_handler(SDL_Event event, Chip8 chip8) {
-
+// checks if any key is being pressed
+void Renderer::keydown_input_handler(SDL_Event event, Chip8 chip8) {
     if (event.type == SDL_EventType::SDL_EVENT_KEY_DOWN) {
+
+        if (event.type == SDLK_ESCAPE) {
+            exit(0);
+        }
+
+
         for (int i = 0; i < 16; ++i) {
             if (event.type == keymap[i]) {
                 chip8.keypad[i] = 1;
+            }
+        }
+    }
+}
+
+void Renderer::keyup_input_handler(SDL_Event event, Chip8 chip8) {
+    if (event.type == SDL_EventType::SDL_EVENT_KEY_UP) {
+        for (int i = 0; i < 16; ++i) {
+            if (event.type == keymap[i]) {
+                chip8.keypad[i] = 0;
             }
         }
     }

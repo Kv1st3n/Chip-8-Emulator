@@ -18,7 +18,8 @@ class Renderer
         void init();
         void handle_sound();
         void update_screen();
-        void input_handler(SDL_Event event, Chip8 chip8); // handles the keymap
+        void keydown_input_handler(SDL_Event event, Chip8 chip8);
+        void keyup_input_handler(SDL_Event event, Chip8 chip8);
 
     private:
         SDL_Window* window{};
