@@ -79,6 +79,25 @@ public:
     void IN_FX55();
     void IN_FX65();
 
+    void IN_NULL();
+    void Table0();
+    void Table8();
+    void TableE();
+    void TableF();
+
+    typedef void (Chip8::*Instruction_function)();
+    using Instruction_function_table8 = void(Chip8::*)();
+
+    Instruction_function_table8 table8_instructions[8] = {
+        &Chip8::IN_8XY0, &Chip8::IN_8XY1, &Chip8::IN_8XY2, &Chip8::IN_8XY3,
+        &Chip8::IN_8XY4, &Chip8::IN_8XY5, &Chip8::IN_8XY6, &Chip8::IN_8XY7
+    };
+
+    Instruction_function table[0xF + 1];
+    Instruction_function table0[0xE + 1];
+    Instruction_function table8[0xE + 1];
+    Instruction_function tableE[0xE + 1];
+    Instruction_function tableF[0x65 + 1];
 };
 
 
