@@ -57,12 +57,28 @@ Renderer::~Renderer()
     SDL_Quit();
 }
 
+void Renderer::update_screen(Chip8 chip8, uint32_t* pixels)
+{   
+
+    for (int i = 0; i < 2048; ++i) {
+        u8 pixel = chip8.display[i];
+        pixels[i] = (0x00FFFFFF * pixel) | 0xFF000000;
+    }
+
+    uint64_t pitch = 64 * sizeof(uint32_t);
+
+    SDL_UpdateTexture(texture, NULL, pixels, pitch);
+    SDL_RenderClear(renderer);
+    SDL_RenderTexture(renderer, texture, NULL, NULL);
+    SDL_RenderPresent(renderer);
+}
+
 void Renderer::init() {
 
     bool done = false;
     int width = 640, height = 320;
     int texture_width = 64, texture_height = 32;
-
+    uint32_t pixels[2048];
     char const* rom_name;
 
     Renderer renderer(width, height, texture_width, texture_height);
@@ -78,6 +94,7 @@ void Renderer::init() {
                 done = true;
             }
         }
+        update_screen(chip8, pixels);
     }
 
 }

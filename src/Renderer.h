@@ -17,7 +17,7 @@ class Renderer
 
         void init();
         void handle_sound();
-        void update_screen();
+        void update_screen(Chip8 chip8, uint32_t* pixels);
         void keydown_input_handler(SDL_Event event, Chip8 chip8);
         void keyup_input_handler(SDL_Event event, Chip8 chip8);
 
