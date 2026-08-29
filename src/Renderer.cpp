@@ -73,7 +73,7 @@ void Renderer::update_screen(Chip8 chip8, uint32_t* pixels)
     SDL_RenderPresent(renderer);
 }
 
-void Renderer::init() {
+void Renderer::init(char const* rom_name) {
 
     bool done = false;
     int width = 640, height = 320;
@@ -93,6 +93,10 @@ void Renderer::init() {
             if (event.type == SDL_EVENT_QUIT) {
                 done = true;
             }
+
+            keydown_input_handler(event, chip8);
+
+            keyup_input_handler(event, chip8);
         }
         update_screen(chip8, pixels);
     }
@@ -106,7 +110,6 @@ void Renderer::keydown_input_handler(SDL_Event event, Chip8 chip8) {
         if (event.type == SDLK_ESCAPE) {
             exit(0);
         }
-
 
         for (int i = 0; i < 16; ++i) {
             if (event.type == keymap[i]) {
