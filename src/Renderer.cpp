@@ -6,7 +6,8 @@
 
 typedef uint8_t u8;
 
-u8 keymap[16] { 
+u8 keymap[16] 
+{ 
     SDLK_1,
     SDLK_2,
     SDLK_3,
@@ -38,7 +39,8 @@ Renderer::Renderer(int width, int height, int texture_width, int texture_height)
         SDL_WINDOW_OPENGL
     );
 
-    if (window == NULL) {
+    if (window == NULL) 
+    {
         SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Could not create window: %s\n", SDL_GetError());
     }
 
@@ -60,7 +62,8 @@ Renderer::~Renderer()
 void Renderer::update_screen(Chip8 &chip8, uint32_t* pixels)
 {   
 
-    for (int i = 0; i < 2048; ++i) {
+    for (int i = 0; i < 2048; ++i) 
+    {
         u8 pixel = chip8.display[i];
         pixels[i] = (0x00FFFFFF * pixel) | 0xFF000000;
     }
@@ -73,56 +76,61 @@ void Renderer::update_screen(Chip8 &chip8, uint32_t* pixels)
     SDL_RenderPresent(renderer);
 }
 
-void Renderer::init(char const* rom_name) {
-
+void Renderer::init(char const* rom_name) 
+{
     bool done = false;
-    int width = 640, height = 320;
-    int texture_width = 64, texture_height = 32;
     uint32_t pixels[2048];
     char const* rom_name;
-
-    Renderer renderer(width, height, texture_width, texture_height);
 
     Chip8 chip8;
     chip8.load_game_rom(rom_name);
 
-    while (!done) {
+    while (!done) 
+    {
         SDL_Event event;
 
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
+        while (SDL_PollEvent(&event)) 
+        {
+            if (event.type == SDL_EVENT_QUIT) 
+            {
                 done = true;
             }
 
             keydown_input_handler(event, chip8);
-
             keyup_input_handler(event, chip8);
         }
         update_screen(chip8, pixels);
     }
-
 }
 
 // checks if any key is being pressed
-void Renderer::keydown_input_handler(SDL_Event &event, Chip8 &chip8) {
-    if (event.type == SDL_EventType::SDL_EVENT_KEY_DOWN) {
-
-        if (event.type == SDLK_ESCAPE) {
+void Renderer::keydown_input_handler(SDL_Event &event, Chip8 &chip8) 
+{
+    if (event.type == SDL_EventType::SDL_EVENT_KEY_DOWN) 
+    {
+        if (event.type == SDLK_ESCAPE) 
+        {
             exit(0);
         }
 
-        for (int i = 0; i < 16; ++i) {
-            if (event.type == keymap[i]) {
+        for (int i = 0; i < 16; ++i) 
+        {
+            if (event.type == keymap[i]) 
+            {
                 chip8.keypad[i] = 1;
             }
         }
     }
 }
 
-void Renderer::keyup_input_handler(SDL_Event &event, Chip8 &chip8) {
-    if (event.type == SDL_EventType::SDL_EVENT_KEY_UP) {
-        for (int i = 0; i < 16; ++i) {
-            if (event.type == keymap[i]) {
+void Renderer::keyup_input_handler(SDL_Event &event, Chip8 &chip8) 
+{
+    if (event.type == SDL_EventType::SDL_EVENT_KEY_UP) 
+    {
+        for (int i = 0; i < 16; ++i) 
+        {
+            if (event.type == keymap[i]) 
+            {
                 chip8.keypad[i] = 0;
             }
         }
