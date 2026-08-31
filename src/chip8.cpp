@@ -30,7 +30,7 @@ const unsigned int MEMORY_SIZE = 0x1000; // 4Kb (4096)
 Chip8::Chip8() {}
 Chip8::~Chip8() {}
 
-void Chip8::clear_stack(u16 stack, u8 V, u8 keypad) {
+void Chip8::clear_stack(u16 &stack, u8 &V, u8 &keypad) {
 
     for (int i = 0; i < 16; i++) {
         this->stack[i] = 0;
@@ -40,14 +40,14 @@ void Chip8::clear_stack(u16 stack, u8 V, u8 keypad) {
 
 }
 
-void Chip8::clear_display(u8 display) {
+void Chip8::clear_display(u8 &display) {
 
     for (int i = 0; i < 2048; i++) {
         this->display[i] = 0;
     }
 }
 
-void Chip8::clear_memory(u8 memory) {
+void Chip8::clear_memory(u8 &memory) {
 
     for (int i = 0; i < 4096; i++) {
         this->memory[i] = 0;
@@ -55,7 +55,7 @@ void Chip8::clear_memory(u8 memory) {
     
 }
 
-void Chip8::load_font(u8 memory) {
+void Chip8::load_font(u8 &memory) {
 
     for (int i = 0; i < 4096; i++) {
         this->memory[i] = chip8_font[i];

@@ -57,7 +57,7 @@ Renderer::~Renderer()
     SDL_Quit();
 }
 
-void Renderer::update_screen(Chip8 chip8, uint32_t* pixels)
+void Renderer::update_screen(Chip8 &chip8, uint32_t* pixels)
 {   
 
     for (int i = 0; i < 2048; ++i) {
@@ -104,7 +104,7 @@ void Renderer::init(char const* rom_name) {
 }
 
 // checks if any key is being pressed
-void Renderer::keydown_input_handler(SDL_Event event, Chip8 chip8) {
+void Renderer::keydown_input_handler(SDL_Event &event, Chip8 &chip8) {
     if (event.type == SDL_EventType::SDL_EVENT_KEY_DOWN) {
 
         if (event.type == SDLK_ESCAPE) {
@@ -119,7 +119,7 @@ void Renderer::keydown_input_handler(SDL_Event event, Chip8 chip8) {
     }
 }
 
-void Renderer::keyup_input_handler(SDL_Event event, Chip8 chip8) {
+void Renderer::keyup_input_handler(SDL_Event &event, Chip8 &chip8) {
     if (event.type == SDL_EventType::SDL_EVENT_KEY_UP) {
         for (int i = 0; i < 16; ++i) {
             if (event.type == keymap[i]) {

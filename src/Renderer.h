@@ -17,9 +17,9 @@ class Renderer
 
         void init(char const* rom_name);
         void handle_sound();
-        void update_screen(Chip8 chip8, uint32_t* pixels);
-        void keydown_input_handler(SDL_Event event, Chip8 chip8);
-        void keyup_input_handler(SDL_Event event, Chip8 chip8);
+        void update_screen(Chip8 &chip8, uint32_t* pixels);
+        void keydown_input_handler(SDL_Event &event, Chip8 &chip8);
+        void keyup_input_handler(SDL_Event &event, Chip8 &chip8);
 
     private:
         SDL_Window* window{};
