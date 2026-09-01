@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     int texture_width = 64, texture_height = 32;
     Renderer Renderer(width, height, texture_width, texture_height);
 
-
-    Renderer.init(argv[1]);
+    const char *rom = argv[1];
+    Renderer.init(rom);
 
 }

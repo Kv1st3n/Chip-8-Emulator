@@ -34,7 +34,8 @@ Chip8::~Chip8() {}
 void Chip8::clear_stack(u16 &stack, u8 &V, u8 &keypad) 
 {
 
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++) 
+    {
         this->stack[i] = 0;
         this->V[i] = 0;
         this->keypad[i] = 0;
@@ -45,7 +46,8 @@ void Chip8::clear_stack(u16 &stack, u8 &V, u8 &keypad)
 void Chip8::clear_display(u8 &display) 
 {
 
-    for (int i = 0; i < 2048; i++) {
+    for (int i = 0; i < 2048; i++) 
+    {
         this->display[i] = 0;
     }
 }
@@ -53,7 +55,8 @@ void Chip8::clear_display(u8 &display)
 void Chip8::clear_memory(u8 &memory) 
 {
 
-    for (int i = 0; i < 4096; i++) {
+    for (int i = 0; i < 4096; i++) 
+    {
         this->memory[i] = 0;
     }
     
@@ -62,9 +65,9 @@ void Chip8::clear_memory(u8 &memory)
 void Chip8::load_font(u8 &memory)
 {
 
-    for (int i = 0; i < 4096; i++) 
+    for (int i = 0; i < 80; i++) 
     {
-        this->memory[i] = chip8_font[i];
+        this->memory[0x50 + i] = chip8_font[i];
     }
 
 }
@@ -130,8 +133,6 @@ bool Chip8::load_game_rom(const char *file_path)
 
 void Chip8::run_cycle() 
 {
-
-    start_chip8();
 
     opcode = (memory[PC] << 8) | memory[PC + 1];
 

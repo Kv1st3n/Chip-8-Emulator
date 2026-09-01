@@ -30,13 +30,11 @@ Renderer::Renderer(int width, int height, int texture_width, int texture_height)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
-    SDL_Window *window;
-
     window = SDL_CreateWindow(
         "Chip8 Emulator",
         width,
         height,
-        SDL_WINDOW_OPENGL
+        0
     );
 
     if (window == NULL) 
@@ -48,7 +46,7 @@ Renderer::Renderer(int width, int height, int texture_width, int texture_height)
     SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
 
     // texturer
-    SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 64, 32);
+    SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, texture_width, texture_height);
 }
 
 Renderer::~Renderer() 
@@ -80,9 +78,9 @@ void Renderer::init(char const* rom_name)
 {
     bool done = false;
     uint32_t pixels[2048];
-    char const* rom_name;
 
     Chip8 chip8;
+    chip8.start_chip8();
     chip8.load_game_rom(rom_name);
 
     while (!done) 
@@ -99,6 +97,7 @@ void Renderer::init(char const* rom_name)
             keydown_input_handler(event, chip8);
             keyup_input_handler(event, chip8);
         }
+        chip8.run_cycle();
         update_screen(chip8, pixels);
     }
 }

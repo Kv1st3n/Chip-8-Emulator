@@ -15,7 +15,7 @@ class Chip8
         u8 memory[4096];
         u8 V[16]; // variable registers
 
-        u8 PC; // program counter
+        u16 PC; // program counter
         u8 I; // Index register  
         u8 opcode;
 
@@ -23,7 +23,6 @@ class Chip8
         u8 sound_timer;
 
 
-        void start_chip8();
         void clear_stack(u16 &stack, u8 &V, u8 &keypad);
         void clear_display(u8 &display);
         void clear_memory(u8 &memory);
@@ -31,9 +30,12 @@ class Chip8
         void function_pointer();
 
     public:
+        Chip8();
+        ~Chip8();
         u8 display[64 * 32];
         u8 keypad[16];
         
+        void start_chip8();
         void run_cycle();
         bool load_game_rom(const char *file_path);
 
