@@ -28,6 +28,6 @@ Another note is that some ROMS may not function properly (most likely my code), 
 ## References
 Considering emulation is a new endeavor for me, I used the following resources that helped me with the development. These resources are useful in explaining the functionality and gives great idea of the overall structure:
 
-- https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#keypad
+- https://tobiasvl.github.io/blog/write-a-chip-8-emulator/
 - https://austinmorlan.com/posts/chip8_emulator/
 - https://github.com/trapexit/chip-8_documentation
