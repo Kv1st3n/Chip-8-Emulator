@@ -22,7 +22,8 @@ cmake --build build
 *breakout*
 
 ## Note
-This repo does not include any ROMS for Chip8, but they are easy to find by simply searching "Chip8 roms"
+This repo does not include any ROMS for Chip8, but they are easy to find by simply searching "Chip8 roms".
+Another note is that some ROMS may not function properly (most likely my code), but some Pong roms does not update the scores.
 
 ## References
 Considering emulation is a new endeavor for me, I used the following resources that helped me with the development. These resources are useful in explaining the functionality and gives great idea of the overall structure:
