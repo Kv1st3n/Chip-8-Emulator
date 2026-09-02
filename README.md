@@ -25,7 +25,7 @@ cmake --build build
 This repo does not include any ROMS for Chip8, but they are easy to find by simply searching "Chip8 roms"
 
 ## References
-Considering emulation is a new endeavor, I used the following resources that helped me with the development:
+Considering emulation is a new endeavor for me, I used the following resources that helped me with the development. These resources are useful in explaining the functionality and gives great idea of the overall structure:
 
 - https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#keypad
 - https://austinmorlan.com/posts/chip8_emulator/
