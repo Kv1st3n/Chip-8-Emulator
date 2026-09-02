@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int width = 640, height = 320;
+    int width = 720, height = 520;
     int texture_width = 64, texture_height = 32;
     Renderer Renderer(width, height, texture_width, texture_height);
 

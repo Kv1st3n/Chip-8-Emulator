@@ -28,7 +28,11 @@ unsigned char chip8_font[80] =
 const unsigned int START_ADDRESS = 0x200;
 const unsigned int MEMORY_SIZE = 0x1000; // 4Kb (4096)
 
-Chip8::Chip8() {}
+Chip8::Chip8() 
+{   
+    function_pointer();
+}
+
 Chip8::~Chip8() {}
 
 void Chip8::clear_stack(u16 &stack, u8 &V, u8 &keypad) 
@@ -89,7 +93,7 @@ void Chip8::start_chip8()
 bool Chip8::load_game_rom(const char *file_path) 
 {
 
-    std::ifstream file(file_path, std::ios::binary);
+    std::ifstream file(file_path, std::ifstream::binary | std::ifstream::ate);
 
     if (file.is_open()) 
     {
@@ -109,7 +113,7 @@ bool Chip8::load_game_rom(const char *file_path)
         // check if it can be loaded
         if ((MEMORY_SIZE - START_ADDRESS) > rom_size) 
         {
-            for (long i = 0; i < rom_size; i++) 
+            for (long i = 0; i < rom_size; ++i) 
             {
                 memory[i + START_ADDRESS] = buffer[i];
             }
@@ -138,6 +142,7 @@ void Chip8::run_cycle()
 
     // decode / execute
     ((*this).*(table[(opcode & 0xF000u) >> 12U]))();
+    printf("PC: %04X opcode: %04X\n", PC, opcode);
 
     if (delay_timer > 0) 
     {
@@ -331,14 +336,10 @@ void Chip8::IN_8XY5()
 
 void Chip8::IN_8XY6() 
 {
-
     u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 VY = (opcode & 0x00F0u) >> 4u;
-
-    V[VX] = (V[VX] & 0x1u);
+    V[0xF] = V[VX] & 0x1u;
     V[VX] >>= 1;
     PC += 2;
-
 }
 
 void Chip8::IN_8XY7() 
@@ -356,17 +357,14 @@ void Chip8::IN_8XY7()
         V[0xF] = 0;
     }
 
-    V[VY] = V[VY] - V[VX];
+    V[VX] = V[VY] - V[VX];
     PC += 2;
 }
 
 void Chip8::IN_8XYE() 
 {
-
     u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 VY = (opcode & 0x00F0u) >> 4u;
-
-    V[VX] = (V[VX] & 0x1u) >> 7u;
+    V[0xF] = (V[VX] & 0x80u) >> 7u;
     V[VX] <<= 1;
     PC += 2;
 }
@@ -379,7 +377,7 @@ void Chip8::IN_9XY0()
 
     if (V[VX] != V[VY]) 
     {
-        PC += 2;
+        PC += 4;
     } 
     else 
     {
@@ -390,7 +388,7 @@ void Chip8::IN_9XY0()
 void Chip8::IN_ANNN() 
 {
 
-    u8 address = (opcode & 0x0FFF);
+    u16 address = (opcode & 0x0FFF);
     I = address;
     PC += 2;
 }
@@ -398,7 +396,7 @@ void Chip8::IN_ANNN()
 void Chip8::IN_BNNN() 
 {
 
-    u8 address = (opcode & 0x0FFF);
+    u16 address = (opcode & 0x0FFF);
     PC = V[0] + address;
 
 }
@@ -412,38 +410,40 @@ void Chip8::IN_CXNN()
     u8 random_number = (rand() % (0xFF + 1));
 
     V[VX] = NN & random_number;
+    PC += 2;
     
 }
 
 void Chip8::IN_DXYN() 
 {
-
     u8 VX = (opcode & 0x0F00u) >> 8u;
     u8 VY = (opcode & 0x00F0u) >> 4u;
-    u8 X_pos = (VX % 63); // display width
-    u8 Y_pos = (VY & 31);
+    u8 X_pos = V[VX] % 64;
+    u8 Y_pos = V[VY] % 32;
     u8 sprite_height = (opcode & 0x000Fu);
-    u8 pixel;
     V[0xF] = 0;
 
-    for (long row = 0; row < sprite_height; row++) 
+    for (int row = 0; row < sprite_height; row++) 
     {
-        pixel = memory[I + row];
-        for (long column = 0; column < 8; column++) 
+        u8 pixel = memory[I + row];
+        for (int column = 0; column < 8; column++) 
         {
-            u8 sprite_pixel = (pixel & (0x80u >> row));
-            u16 screen = display[(X_pos + row + ((Y_pos + column) * 64))];
-
-            if (sprite_pixel == 1) 
+            u8 sprite_pixel = pixel & (0x80u >> column);
+            if (sprite_pixel != 0) 
             {
-                if (screen == 1) 
+                int x = (X_pos + column) % 64;
+                int y = (Y_pos + row) % 32;
+                int index = y * 64 + x;
+
+                if (display[index] == 1) 
                 {
                     V[0xF] = 1;
                 }
-                screen ^= 1;
+                display[index] ^= 1;
             }
         }
     }
+    PC += 2;
 }
 
 void Chip8::IN_EX9E() 
@@ -488,25 +488,24 @@ void Chip8::IN_FX07()
 
 void Chip8::IN_FX0A() 
 {
-    
     u8 VX = (opcode & 0x0F00u) >> 8u;
-    u8 keys = 16;
-    bool is_key_press = false;
+    bool key_pressed = false;
 
-    for (int i = 0; i < keys; i++) 
+    for (int i = 0; i < 16; i++) 
     {
-
-        if(keypad[i]) 
+        if (keypad[i]) 
         {
             V[VX] = i;
-            is_key_press = true;
-        } 
-        else 
-        {
-            PC -= 2;
+            key_pressed = true;
+            break;
         }
     }
-    // maybe check !is_key_press return
+
+    if (key_pressed) 
+    {
+        PC += 2;
+    }
+    // if no key pressed, PC doesn't advance — same instruction re-runs next cycle, correctly "waiting"
 }
 
 void Chip8::IN_FX15() 
@@ -540,20 +539,20 @@ void Chip8::IN_FX1E()
 void Chip8::IN_FX29() 
 {
 
-    u8 VX = (opcode & 0x0F00u) >> 8u;
-    I = VX * 0x5u;
+    u16 VX = (opcode & 0x0F00u) >> 8u;
+    I = 0x50 + (V[VX] * 5u);
 
     PC += 2;
 }
 
 void Chip8::IN_FX33() 
 {
-
     u8 VX = (opcode & 0x0F00u) >> 8u;
+    u8 value = V[VX];
 
-    memory[I] = (VX / 100);
-    memory[I + 1] = ((VX / 10) % 10);
-    memory[I + 2] = (VX % 10);
+    memory[I] = value / 100;
+    memory[I + 1] = (value / 10) % 10;
+    memory[I + 2] = value % 10;
 
     PC += 2;
 }
@@ -611,7 +610,7 @@ void Chip8::function_pointer() {
     }
 
     table0[0x0] = &Chip8::IN_00E0;
-    table0[0x1] = &Chip8::IN_00EE;
+    table0[0xE] = &Chip8::IN_00EE;
 
     for (int i = 0; i < 8; ++i) 
     {
@@ -622,7 +621,7 @@ void Chip8::function_pointer() {
     tableE[0x1] = &Chip8::IN_EXA1;
     tableE[0xE] = &Chip8::IN_EX9E;
 
-    for (size_t i = 0; i < 0x65; i++) 
+    for (size_t i = 0; i < 0x100; i++) 
     {
         tableF[i] = &Chip8::IN_NULL;
     }

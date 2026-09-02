@@ -16,8 +16,8 @@ class Chip8
         u8 V[16]; // variable registers
 
         u16 PC; // program counter
-        u8 I; // Index register  
-        u8 opcode;
+        u16 I; // Index register  
+        u16 opcode;
 
         u8 delay_timer;
         u8 sound_timer;
@@ -97,10 +97,10 @@ class Chip8
         };
 
         Instruction_function table[0xF + 1];
-        Instruction_function table0[0xE + 1];
-        Instruction_function table8[0xE + 1];
-        Instruction_function tableE[0xE + 1];
-        Instruction_function tableF[0x65 + 1];
+        Instruction_function table0[0x10];
+        Instruction_function table8[0x10];
+        Instruction_function tableE[0x10];
+        Instruction_function tableF[0x100];
 };
 
 
