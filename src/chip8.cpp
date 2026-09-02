@@ -505,7 +505,7 @@ void Chip8::IN_FX0A()
     {
         PC += 2;
     }
-    // if no key pressed, PC doesn't advance — same instruction re-runs next cycle, correctly "waiting"
+
 }
 
 void Chip8::IN_FX15() 
